@@ -1,0 +1,22 @@
+{
+  "name": "bi-dragonessencecosts",
+  "version": "1.0.0",
+  "description": "Brilliance Institute Dragon Essence (DE) Calculator for calculating research upgrade costs",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build needed'",
+    "start": "vercel dev"
+  },
+  "keywords": [
+    "calculator",
+    "dragon-essence",
+    "brilliance-institute",
+    "game-tool"
+  ],
+  "author": "VAMPIR",
+  "license": "MIT",
+  "devDependencies": {
+    "vercel": "latest"
+  }
+}

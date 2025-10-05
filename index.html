@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Brilliance Institute — DE Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a0808 0%, #2d1810 25%, #1a0808 50%, #0f0606 75%, #1a0808 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ffd700;
+      margin-bottom: 20px;
+      font-size: 2.0rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      background: linear-gradient(45deg, #ffd700, #ff6b6b, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #ffd700, transparent);
+    }
+
+    .small {
+      text-align: center;
+      font-size: 16px;
+      color: #94a3b8;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    .panel {
+      background: rgba(80, 20, 20, 0.85);
+      border: 2px solid rgba(255, 215, 0, 0.6);
+      border-radius: 20px;
+      padding: 18px;
+      -webkit-backdrop-filter: blur(15px);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.4), 
+                  0 0 30px rgba(255, 215, 0, 0.25),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(255, 107, 107, 0.08));
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .panel > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 600;
+      color: #ffd700;
+      font-size: 14px;
+    }
+
+    .bi-level-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 12px 0;
+    }
+
+    .bi-level-row label {
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .bi-level-row .number-input-container {
+      width: auto;
+      min-width: 120px;
+    }
+
+    select, input[type=number] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    /* Hide default number input spinners */
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    select:focus, input[type=number]:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+    }
+
+    /* Custom number input container */
+    .number-input-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .number-input-container input[type=number] {
+      flex: 1;
+      text-align: center;
+      min-width: 50px;
+    }
+
+    .number-btn {
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .number-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .number-btn:active {
+      transform: scale(0.95);
+    }
+
+    .number-btn.minus {
+      background: linear-gradient(135deg, #ff4444, #cc3333);
+    }
+
+    .number-btn.minus:hover {
+      background: linear-gradient(135deg, #ff5555, #dd4444);
+    }
+
+    .number-btn.plus {
+      background: linear-gradient(135deg, #44ff44, #33cc33);
+    }
+
+    .number-btn.plus:hover {
+      background: linear-gradient(135deg, #55ff55, #44dd44);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    th, td {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 6px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    th {
+      background: rgba(255, 215, 0, 0.15);
+      color: #ffd700;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    td:first-child, .text-left {
+      text-align: left;
+    }
+
+    .research-section {
+      margin-top: 15px;
+    }
+
+    .research-section strong {
+      color: #ffd700;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .tables-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 8px;
+    }
+
+    .table-wrapper {
+      min-width: 0;
+    }
+
+    .breakdown-note {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #b8c5e8;
+    }
+
+    .breakdown-section {
+      margin-top: 10px;
+    }
+
+    .breakdown-section strong {
+      color: #ffd700;
+    }
+
+    .totals-section {
+      margin-top: 8px;
+      padding: 12px;
+      background: rgba(255, 215, 0, 0.05);
+      border-radius: 6px;
+    }
+
+    .totals-section div {
+      margin-bottom: 4px;
+    }
+
+    .totals-section strong {
+      color: #ffd700;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #ffd700, #ffb300);
+      color: #000000;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(255, 215, 0, 0.4);
+      background: linear-gradient(135deg, #ffed4e, #ffd700);
+    }
+
+    button.secondary {
+      background: rgba(80, 20, 20, 0.8);
+      color: #ffffff;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    button.secondary:hover {
+      background: rgba(80, 20, 20, 0.9);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .result {
+      background: rgba(255, 107, 107, 0.1);
+      border: 2px solid rgba(255, 107, 107, 0.3);
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 15px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .result div {
+      margin-bottom: 8px;
+    }
+
+    .result strong {
+      color: #ffd700;
+    }
+
+    .breakdown {
+      max-height: 280px;
+      overflow: auto;
+      margin-top: 15px;
+      border-top: 1px solid rgba(255, 215, 0, 0.3);
+      padding-top: 15px;
+    }
+
+    .breakdown::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .breakdown::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .breakdown::-webkit-scrollbar-thumb {
+      background: rgba(255, 215, 0, 0.5);
+      border-radius: 3px;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    h3 {
+      color: #ffd700;
+      margin-bottom: 15px;
+      font-size: 18px;
+      font-weight: 600;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      background: linear-gradient(135deg, #ffd700, #ffb300);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Responsive design */
+    @media (max-width: 1024px) {
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      
+      .panel {
+        padding: 15px;
+      }
+      
+      .actions {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+      }
+    }
+
+    /* Glow animations */
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 25px 50px rgba(0,0,0,0.4), 
+                    0 0 30px rgba(255, 215, 0, 0.25),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+      50% {
+        box-shadow: 0 25px 50px rgba(0,0,0,0.4), 
+                    0 0 40px rgba(255, 215, 0, 0.35),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      }
+    }
+
+    .panel:nth-child(1) {
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    @keyframes glowRed {
+      0%, 100% {
+        box-shadow: 0 25px 50px rgba(0,0,0,0.4), 
+                    0 0 30px rgba(255, 107, 107, 0.25),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+      50% {
+        box-shadow: 0 25px 50px rgba(0,0,0,0.4), 
+                    0 0 40px rgba(255, 107, 107, 0.35),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      }
+    }
+
+    .panel:nth-child(2) {
+      animation: glowRed 3s ease-in-out infinite 1.5s;
+      border-color: rgba(255, 107, 107, 0.6);
+    }
+
+    .panel:nth-child(2)::before {
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.12), rgba(255, 215, 0, 0.08));
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background: rgba(80, 20, 20, 0.95);
+      border: 2px solid rgba(255, 107, 107, 0.6);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      position: relative;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.6), 
+                  0 0 40px rgba(255, 107, 107, 0.4);
+      animation: slideIn 0.3s ease;
+    }
+
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.12), rgba(255, 215, 0, 0.08));
+      pointer-events: none;
+      z-index: 1;
+      border-radius: 18px;
+    }
+
+    .modal-content > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      color: #ffd700;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 3;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 215, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .close:hover {
+      background: rgba(255, 215, 0, 0.2);
+      transform: scale(1.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { 
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px);
+      }
+      to { 
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .credit {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: rgba(80, 20, 20, 0.9);
+      border: 1px solid rgba(255, 215, 0, 0.6);
+      border-radius: 20px;
+      padding: 8px 16px;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      font-size: 0.9rem;
+      font-weight: 500;
+      opacity: 0.85;
+      z-index: 1000;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3), 0 0 20px rgba(255, 215, 0, 0.2);
+    }
+
+    .credit:hover {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+
+    .credit-text {
+      background: linear-gradient(45deg, #ffd700, #ff6b6b, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Brilliance Institute — Dragon Essence (DE) Calculator</h1>
+    <p class="small">Pick your current Brilliance Institute level and each research's current level. Calculator will compute Dragon Essence needed to reach the <strong>T11-required research levels</strong> and Dragon Essence to max the entire tree.</p>
+    <div class="credit">
+      <div class="credit-text">
+        <span>🧛</span>
+        <span>VAMPIR</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel" id="left">
+        <div class="bi-level-row">
+          <label for="biLevel">Current Brilliance Institute Level</label>
+          <div class="number-input-container" id="biLevelContainer">
+            <!-- Will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <div class="research-section">
+          <strong>Research levels (set your current level for each):</strong>
+          <div class="tables-container">
+            <div class="table-wrapper">
+              <table id="researchTable1">
+                <thead>
+                  <tr><th class="text-left">Research</th><th>Brilliance Institute Requirement</th><th>Current Level</th><th>Max Level</th><th>Target (T11 Requirement)</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="table-wrapper">
+              <table id="researchTable2">
+                <thead>
+                  <tr><th class="text-left">Research</th><th>Brilliance Institute Requirement</th><th>Current Level</th><th>Max Level</th><th>Target (T11 Requirement)</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="calcBtn">Calculate</button>
+          <button class="secondary" id="resetBtn">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div id="resultsModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h3>Calculation Results</h3>
+        <div id="results">
+          <div class="result">
+            <div><strong>DE to reach T11-required research levels:</strong> <span id="t11Cost">—</span></div>
+            <div><strong>Brilliance Institute upgrade cost required (if current Brilliance Institute too low):</strong> <span id="biUpgradeCost">—</span></div>
+            <div><strong>DE to fully max all research:</strong> <span id="maxCost">—</span></div>
+            <div class="breakdown-note">You will also see a per-research breakdown and totals below.</div>
+          </div>
+
+          <div class="breakdown" id="breakdown"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ---------- Data: research cost arrays and BI requirement ----------
+  // Each research: { id, name, biReq, costs: [level1, level2, ...], t11TargetLevel (if blue) }
+  const researches = [
+    { id: 'training_speed_1', name: 'Training Speed 1', biReq: 1, costs: [1,1,2,2,2,2,3,3,4,4], t11TargetLevel: 1 },
+    { id: 'relic_hp', name: 'Relic HP', biReq: 3, costs: [8,10,11,13,16,19,23,27,32,38], t11TargetLevel: 6 },
+    { id: 'relic_attack', name: 'Relic Attack', biReq: 3, costs: [8,10,11,13,16,19,23,27,32,38], t11TargetLevel: 6 },
+    { id: 'soldier_assault_1', name: 'Soldier Assault 1', biReq: 5, costs: [12,14,16,20,23,28,34,40,48,57], t11TargetLevel: 6 },
+    { id: 'soldier_defense_1', name: 'Soldier Defence 1', biReq: 5, costs: [12,14,16,20,23,28,34,40,48,57], t11TargetLevel: 6 },
+    { id: 'march_size', name: 'March Size', biReq: 5, costs: [16,19,22,26,31,37,45,54,64,76], t11TargetLevel: 6 },
+    { id: 'hero_level_A', name: 'Hero Level (A)', biReq: 7, costs: [62,131], t11TargetLevel: 2 },
+    { id: 'soldier_capacity_1', name: 'Soldier Capacity 1', biReq: 9, costs: [26,34,47,71,112], t11TargetLevel: 5 },
+    { id: 'training_mastery', name: 'Training Mastery', biReq: 9, costs: [26,34,47,71,112], t11TargetLevel: 5 },
+    { id: 'healing_speed', name: 'Healing Speed', biReq: 9, costs: [44,57,78,117,186], t11TargetLevel: 5 },
+    { id: 'hero_assault_1', name: 'Hero Assault 1', biReq: 11, costs: [46,55,64,78,92,110,133,160,192,228], t11TargetLevel: 10 },
+    { id: 'hero_defense_1', name: 'Hero Defense 1', biReq: 11, costs: [46,55,64,78,92,110,133,160,192,228], t11TargetLevel: 0 },
+    { id: 'healing_boost', name: 'Healing Boost', biReq: 13, costs: [70,90,125,187,298], t11TargetLevel: 0 },
+    { id: 'hero_assault_2', name: 'Hero Assault 2', biReq: 13, costs: [57,69,80,97,114,137,166,200,239,285], t11TargetLevel: 10 },
+    { id: 'hero_defense_2', name: 'Hero Defense 2', biReq: 13, costs: [57,69,80,97,114,137,166,200,239,285], t11TargetLevel: 0 },
+    { id: 'soldier_level', name: 'Soldier Level', biReq: 15, costs: [288], t11TargetLevel: 1 },
+    { id: 'hero_level_B', name: 'Hero Level (B)', biReq: 15, costs: [189,321,642], t11TargetLevel: 0 }
+  ];
+
+  // Building (BI) costs per level 1..15 (from the table)
+  const biLevelCosts = [33,33,33,33,33,59,59,59,59,59,70,70,70,70,70]; // index 0 => cost to upgrade TO level 1? We'll treat it as cost for level 1,2...
+  // We'll interpret cost to upgrade from level n to n+1 as biLevelCosts[n] where n is 1-indexed; but table lists BI Cost at each level. For simplicity, to go from current to target we will sum the BI Cost values for target levels current+1 .. target.
+
+  // ---------- Build UI ----------
+  const biLevelContainer = document.getElementById('biLevelContainer');
+  const tbody1 = document.querySelector('#researchTable1 tbody');
+  const tbody2 = document.querySelector('#researchTable2 tbody');
+
+  // Create custom BI level input with plus/minus buttons
+  const biMinusBtn = document.createElement('button');
+  biMinusBtn.classList.add('number-btn', 'minus');
+  biMinusBtn.textContent = '−';
+  biMinusBtn.type = 'button';
+
+  const biInput = document.createElement('input');
+  biInput.type = 'number';
+  biInput.id = 'biLevel';
+  biInput.min = 1;
+  biInput.max = 15;
+  biInput.step = 1;
+  biInput.value = 1;
+
+  const biPlusBtn = document.createElement('button');
+  biPlusBtn.classList.add('number-btn', 'plus');
+  biPlusBtn.textContent = '+';
+  biPlusBtn.type = 'button';
+
+  // Add event listeners for BI level buttons
+  biMinusBtn.addEventListener('click', () => {
+    let val = parseInt(biInput.value) || 1;
+    if (val > 1) {
+      biInput.value = val - 1;
+    }
+  });
+
+  biPlusBtn.addEventListener('click', () => {
+    let val = parseInt(biInput.value) || 1;
+    if (val < 15) {
+      biInput.value = val + 1;
+    }
+  });
+
+  biLevelContainer.appendChild(biMinusBtn);
+  biLevelContainer.appendChild(biInput);
+  biLevelContainer.appendChild(biPlusBtn);
+
+  // Split research items into two tables
+  const firstTableResearches = researches.slice(0, Math.ceil(researches.length / 2));
+  const secondTableResearches = researches.slice(Math.ceil(researches.length / 2));
+
+  // Populate first table
+  firstTableResearches.forEach(r=>{
+    const tr = createResearchRow(r);
+    tbody1.appendChild(tr);
+  });
+
+  // Populate second table
+  secondTableResearches.forEach(r=>{
+    const tr = createResearchRow(r);
+    tbody2.appendChild(tr);
+  });
+
+  // Function to create research row
+  function createResearchRow(r) {
+    const tr = document.createElement('tr');
+    tr.dataset.id = r.id;
+
+    const nameTd = document.createElement('td'); 
+    nameTd.classList.add('text-left'); 
+    nameTd.textContent = r.name;
+    const biReqTd = document.createElement('td'); biReqTd.textContent = r.biReq;
+    const currTd = document.createElement('td');
+    
+    // Create custom number input container
+    const inputContainer = document.createElement('div');
+    inputContainer.classList.add('number-input-container');
+    
+    // Minus button
+    const minusBtn = document.createElement('button');
+    minusBtn.classList.add('number-btn', 'minus');
+    minusBtn.textContent = '−';
+    minusBtn.type = 'button';
+    
+    // Input field
+    const input = document.createElement('input');
+    input.type='number'; input.min=0; input.step=1;
+    input.value = 0;
+    input.max = r.costs.length;
+    
+    // Plus button
+    const plusBtn = document.createElement('button');
+    plusBtn.classList.add('number-btn', 'plus');
+    plusBtn.textContent = '+';
+    plusBtn.type = 'button';
+    
+    // Add event listeners
+    minusBtn.addEventListener('click', () => {
+      let val = parseInt(input.value) || 0;
+      if (val > 0) {
+        input.value = val - 1;
+      }
+    });
+    
+    plusBtn.addEventListener('click', () => {
+      let val = parseInt(input.value) || 0;
+      if (val < r.costs.length) {
+        input.value = val + 1;
+      }
+    });
+    
+    inputContainer.appendChild(minusBtn);
+    inputContainer.appendChild(input);
+    inputContainer.appendChild(plusBtn);
+    currTd.appendChild(inputContainer);
+    
+    const maxTd = document.createElement('td'); maxTd.textContent = r.costs.length;
+    const targetTd = document.createElement('td'); targetTd.textContent = r.t11TargetLevel>0? r.t11TargetLevel : '-';
+
+    tr.appendChild(nameTd);
+    tr.appendChild(biReqTd);
+    tr.appendChild(currTd);
+    tr.appendChild(maxTd);
+    tr.appendChild(targetTd);
+
+    return tr;
+  }
+
+  // ---------- Calculation functions ----------
+  function sumSlice(arr, fromLevelExclusive, toLevelInclusive){
+    // arr is 0-indexed for level1..N
+    // sum costs for levels (fromLevelExclusive+1) .. toLevelInclusive
+    if(toLevelInclusive <= fromLevelExclusive) return 0;
+    let sum = 0;
+    for(let lvl = fromLevelExclusive+1; lvl<=toLevelInclusive; lvl++){
+      const idx = lvl-1;
+      if(idx < 0 || idx >= arr.length) continue; // safety
+      sum += arr[idx];
+    }
+    return sum;
+  }
+
+  function computeResults(){
+    const currentBI = parseInt(biInput.value,10);
+    // gather current levels from both tables
+    const currLevels = {};
+    const allRows = [...tbody1.querySelectorAll('tr'), ...tbody2.querySelectorAll('tr')];
+    allRows.forEach(tr=>{
+      const id = tr.dataset.id;
+      const input = tr.querySelector('input');
+      let lv = parseInt(input.value||0,10);
+      if(isNaN(lv) || lv < 0) lv = 0;
+      const max = parseInt(input.max,10);
+      if(lv > max) lv = max;
+      currLevels[id] = lv;
+      input.value = lv;
+    });
+
+    // 1) DE to reach T11 required research levels (blue cells)
+    let t11Sum = 0;
+    // also compute required BI level to allow those researches
+    let neededBILevelForT11 = 0;
+    const t11Breakdown = [];
+    researches.forEach(r=>{
+      if(r.t11TargetLevel && r.t11TargetLevel > 0){
+        const current = currLevels[r.id]||0;
+        const target = Math.min(r.t11TargetLevel, r.costs.length);
+        const add = sumSlice(r.costs, current, target);
+        t11Sum += add;
+        neededBILevelForT11 = Math.max(neededBILevelForT11, r.biReq);
+        t11Breakdown.push({ name: r.name, current, target, add });
+      }
+    });
+
+    // 2) DE to fully max entire research tree
+    let maxTreeSum = 0;
+    const maxBreakdown = [];
+    researches.forEach(r=>{
+      const current = currLevels[r.id]||0;
+      const target = r.costs.length;
+      const add = sumSlice(r.costs, current, target);
+      maxTreeSum += add;
+      maxBreakdown.push({ name: r.name, current, target, add });
+    });
+
+    // 3) BI upgrade cost if user's BI too low
+    let biUpgradeCost = 0;
+    if(currentBI < neededBILevelForT11){
+      // sum costs for BI levels currentBI+1 .. neededBILevelForT11
+      // our biLevelCosts array is per level 1..15 corresponding to cost shown for that level in table.
+      // We'll sum indices (currentBI) .. (neededBILevelForT11-1) interpreting biLevelCosts as cost for that target level.
+      for(let lvl = currentBI+1; lvl <= neededBILevelForT11; lvl++){
+        // lvl is target level; cost for that level is biLevelCosts[lvl-1]
+        const idx = lvl-1;
+        if(idx >=0 && idx < biLevelCosts.length) biUpgradeCost += biLevelCosts[idx];
+      }
+    }
+
+    // Populate results UI
+    document.getElementById('t11Cost').textContent = t11Sum.toLocaleString() + ' DE';
+    document.getElementById('maxCost').textContent = maxTreeSum.toLocaleString() + ' DE';
+    document.getElementById('biUpgradeCost').textContent = (biUpgradeCost>0? biUpgradeCost.toLocaleString() + ' DE (upgrade Brilliance Institute to level ' + neededBILevelForT11 + ')' : 'No Brilliance Institute upgrade required');
+
+    // breakdown HTML
+    const br = document.getElementById('breakdown');
+    br.innerHTML = '';
+
+    const h1 = document.createElement('div'); h1.innerHTML = '<strong>T11-required research breakdown</strong>';
+    br.appendChild(h1);
+
+    const t = document.createElement('table');
+    t.innerHTML = '<thead><tr><th class="text-left">Research</th><th>Current</th><th>Target</th><th>DE Needed</th></tr></thead>';
+    const tb = document.createElement('tbody');
+    t11Breakdown.forEach(row=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td class="text-left">${row.name}</td><td>${row.current}</td><td>${row.target}</td><td>${row.add.toLocaleString()}</td>`;
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    br.appendChild(t);
+
+    const h2 = document.createElement('div'); 
+    h2.classList.add('breakdown-section');
+    h2.innerHTML = '<strong>Full research maxing breakdown</strong>';
+    br.appendChild(h2);
+    const t2 = document.createElement('table');
+    t2.innerHTML = '<thead><tr><th class="text-left">Research</th><th>Current</th><th>Max</th><th>DE Needed</th></tr></thead>';
+    const tb2 = document.createElement('tbody');
+    maxBreakdown.forEach(row=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td class="text-left">${row.name}</td><td>${row.current}</td><td>${row.target}</td><td>${row.add.toLocaleString()}</td>`;
+      tb2.appendChild(tr);
+    });
+    t2.appendChild(tb2);
+    br.appendChild(t2);
+
+    const totals = document.createElement('div'); 
+    totals.classList.add('totals-section');
+    totals.innerHTML = `<div><strong>Total DE for T11-required research:</strong> ${t11Sum.toLocaleString()} DE</div>
+                        <div><strong>Total DE to max all research:</strong> ${maxTreeSum.toLocaleString()} DE</div>
+                        <div style="margin-top:6px;"><strong>Brilliance Institute Level required for those T11 researches:</strong> ${neededBILevelForT11} (Your Brilliance Institute: ${currentBI})</div>
+                        <div><strong>Brilliance Institute upgrade cost (if needed):</strong> ${biUpgradeCost>0? biUpgradeCost.toLocaleString() + ' DE' : 'Not needed'}</div>`;
+    br.appendChild(totals);
+  }
+
+  // ---------- event hookups ----------
+  document.getElementById('calcBtn').addEventListener('click', () => {
+    computeResults();
+    // Show the modal
+    document.getElementById('resultsModal').classList.add('show');
+  });
+  
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    biInput.value = 1;
+    const allInputs = [...tbody1.querySelectorAll('input'), ...tbody2.querySelectorAll('input')];
+    allInputs.forEach(inp=> inp.value = 0);
+    document.getElementById('t11Cost').textContent = '—';
+    document.getElementById('maxCost').textContent = '—';
+    document.getElementById('biUpgradeCost').textContent = '—';
+    document.getElementById('breakdown').innerHTML = '';
+  });
+
+  // Modal event handlers
+  document.getElementById('closeModal').addEventListener('click', () => {
+    document.getElementById('resultsModal').classList.remove('show');
+  });
+
+  // Close modal when clicking outside of it
+  document.getElementById('resultsModal').addEventListener('click', (e) => {
+    if (e.target.id === 'resultsModal') {
+      document.getElementById('resultsModal').classList.remove('show');
+    }
+  });
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.getElementById('resultsModal').classList.remove('show');
+    }
+  });
+
+  // initialize defaults
+  biInput.value = 1;
+  </script>
+</body>
+</html>
