@@ -388,11 +388,17 @@
     .breakdown::-webkit-scrollbar-track {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 3px;
+      margin: 5px 0;
     }
 
     .breakdown::-webkit-scrollbar-thumb {
-      background: rgba(255, 215, 0, 0.5);
+      background: rgba(255, 215, 0, 0.4);
       border-radius: 3px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .breakdown::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 215, 0, 0.6);
     }
 
     .note {
@@ -822,7 +828,7 @@
       height: 90%;
       max-width: 95vw;
       max-height: 95vh;
-      overflow-y: auto;
+      overflow: hidden;
       position: relative;
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
@@ -830,6 +836,32 @@
                   0 0 40px rgba(255, 107, 107, 0.4);
       animation: slideIn 0.3s ease;
       font-size: 16px;
+    }
+
+    /* Modal content scrollable area */
+    .modal-content #results {
+      height: calc(100% - 60px);
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    /* Custom scrollbar for modal content */
+    .modal-content #results::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .modal-content #results::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    .modal-content #results::-webkit-scrollbar-thumb {
+      background: rgba(255, 215, 0, 0.6);
+      border-radius: 4px;
+    }
+
+    .modal-content #results::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 215, 0, 0.8);
     }
 
     .modal-content::before {
