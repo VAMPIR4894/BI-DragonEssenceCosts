@@ -536,12 +536,13 @@
 
       /* Credit section mobile */
       .credit {
-        position: relative;
-        top: auto;
-        right: auto;
-        margin: 15px 0;
+        position: static;
+        display: block;
+        width: fit-content;
+        margin: 10px auto 20px auto;
         text-align: center;
         border-radius: 15px;
+        transform: none;
       }
 
       /* Small text adjustments */
@@ -637,6 +638,16 @@
       .small {
         font-size: 13px;
         padding: 0 5px;
+      }
+
+      /* Credit positioning for very small screens */
+      .credit {
+        position: static;
+        display: block;
+        width: fit-content;
+        margin: 8px auto 15px auto;
+        padding: 6px 12px;
+        font-size: 0.8rem;
       }
 
       /* Very small screen table scroll indicator */
