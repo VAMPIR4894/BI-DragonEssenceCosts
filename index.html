@@ -409,6 +409,19 @@
         grid-template-columns: 1fr;
         gap: 20px;
       }
+
+      /* Credit positioning for tablets */
+      .credit {
+        position: static !important;
+        display: block !important;
+        width: fit-content !important;
+        margin: 15px auto 20px auto !important;
+        text-align: center !important;
+        top: auto !important;
+        right: auto !important;
+        z-index: auto !important;
+        transform: none !important;
+      }
     }
 
     @media (max-width: 768px) {
@@ -536,13 +549,16 @@
 
       /* Credit section mobile */
       .credit {
-        position: static;
-        display: block;
-        width: fit-content;
-        margin: 10px auto 20px auto;
-        text-align: center;
-        border-radius: 15px;
-        transform: none;
+        position: static !important;
+        display: block !important;
+        width: fit-content !important;
+        margin: 10px auto 20px auto !important;
+        text-align: center !important;
+        border-radius: 15px !important;
+        transform: none !important;
+        top: auto !important;
+        right: auto !important;
+        z-index: auto !important;
       }
 
       /* Small text adjustments */
@@ -642,12 +658,16 @@
 
       /* Credit positioning for very small screens */
       .credit {
-        position: static;
-        display: block;
-        width: fit-content;
-        margin: 8px auto 15px auto;
-        padding: 6px 12px;
-        font-size: 0.8rem;
+        position: static !important;
+        display: block !important;
+        width: fit-content !important;
+        margin: 8px auto 15px auto !important;
+        padding: 6px 12px !important;
+        font-size: 0.8rem !important;
+        top: auto !important;
+        right: auto !important;
+        z-index: auto !important;
+        transform: none !important;
       }
 
       /* Very small screen table scroll indicator */
