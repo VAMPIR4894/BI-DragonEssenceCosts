@@ -986,6 +986,26 @@
     }
   });
 
+  // Add input validation for BI level direct typing
+  biInput.addEventListener('input', () => {
+    let val = parseInt(biInput.value) || 1;
+    if (val < 1) {
+      biInput.value = 1;
+    } else if (val > 15) {
+      biInput.value = 15;
+    }
+  });
+
+  // Add blur validation as fallback for BI level
+  biInput.addEventListener('blur', () => {
+    let val = parseInt(biInput.value) || 1;
+    if (val < 1) {
+      biInput.value = 1;
+    } else if (val > 15) {
+      biInput.value = 15;
+    }
+  });
+
   biLevelContainer.appendChild(biMinusBtn);
   biLevelContainer.appendChild(biInput);
   biLevelContainer.appendChild(biPlusBtn);
@@ -1051,6 +1071,26 @@
       let val = parseInt(input.value) || 0;
       if (val < r.costs.length) {
         input.value = val + 1;
+      }
+    });
+    
+    // Add input validation for direct typing
+    input.addEventListener('input', () => {
+      let val = parseInt(input.value) || 0;
+      if (val < 0) {
+        input.value = 0;
+      } else if (val > r.costs.length) {
+        input.value = r.costs.length;
+      }
+    });
+    
+    // Add blur validation as fallback
+    input.addEventListener('blur', () => {
+      let val = parseInt(input.value) || 0;
+      if (val < 0) {
+        input.value = 0;
+      } else if (val > r.costs.length) {
+        input.value = r.costs.length;
       }
     });
     
