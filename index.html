@@ -442,6 +442,12 @@
         font-size: 16px;
       }
 
+      /* Stack tables vertically on mobile portrait */
+      .tables-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
       /* Mobile table styling */
       .table-wrapper {
         overflow-x: auto;
@@ -553,6 +559,22 @@
         font-size: 16px;
         text-align: center;
         margin-bottom: 15px;
+      }
+    }
+
+    /* Landscape mobile - keep tables side by side if there's enough width */
+    @media (max-width: 768px) and (orientation: landscape) and (min-width: 568px) {
+      .tables-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+      
+      table {
+        font-size: 10px;
+      }
+      
+      th, td {
+        padding: 6px 3px;
       }
     }
 
