@@ -154,7 +154,7 @@
     .number-input-container {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 5px;
       width: 100%;
     }
 
@@ -207,7 +207,7 @@
 
     .number-btn.limit {
       width: auto;
-      padding: 0 8px;
+      padding: 0 6px;
       font-size: 11px;
       text-transform: uppercase;
     }
@@ -260,6 +260,10 @@
       text-align: left;
     }
 
+    td:first-child {
+      white-space: nowrap;
+    }
+
     .research-section {
       margin-top: 15px;
     }
@@ -271,7 +275,7 @@
       margin-bottom: 10px;
     }
 
-    /* T12 faction cards: each faction sets --f (accent rgb) */
+    /* Tier 2 faction cards: each faction sets --f (accent rgb) */
     .faction-card {
       margin-top: 22px;
       padding: 16px;
@@ -1065,13 +1069,13 @@
         <div class="actions">
           <button id="calcBtn">Calculate</button>
           <button class="secondary" id="resetBtn">Reset</button>
-          <button class="secondary" id="t12Btn">T12 Unlock</button>
+          <button class="secondary" id="t12Btn">Tier 2 Unlock</button>
         </div>
       </div>
 
       <div id="t12Panel" style="display:none;">
         <div class="bi-level-row">
-          <strong>T12 Unlock — set your current research levels for each faction</strong>
+          <strong>Tier 2 Unlock — set your current research levels for each faction</strong>
         </div>
         <div id="t12Factions"></div>
         <div class="actions">
@@ -1082,11 +1086,11 @@
       </div>
     </div>
 
-    <!-- T12 Results Modal -->
+    <!-- Tier 2 Results Modal -->
     <div id="t12Modal" class="modal">
       <div class="modal-content">
         <span class="close" id="closeT12Modal">&times;</span>
-        <h3>T12 Unlock Results</h3>
+        <h3>Tier 2 Unlock Results</h3>
         <div id="t12Results"></div>
       </div>
     </div>
@@ -1545,7 +1549,7 @@
     }
   });
 
-  // ---------- T12 Unlock: research form repeated for 3 factions (no building level) ----------
+  // ---------- Tier 2 Unlock: research form repeated for 3 factions (no building level) ----------
   const T12_FACTIONS = 3;
   const t12Tbodies = []; // per faction: [tbodyA, tbodyB]
   const t12Container = document.getElementById('t12Factions');
