@@ -273,6 +273,39 @@
       margin-bottom: 10px;
     }
 
+    /* T12 faction cards: each faction sets --f (accent rgb) */
+    .faction-card {
+      margin-top: 22px;
+      padding: 16px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(var(--f), 0.16), rgba(0, 0, 0, 0.55));
+      border: 2px solid rgba(var(--f), 0.7);
+      box-shadow: 0 0 24px rgba(var(--f), 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .faction-card.league { --f: 59, 130, 246; --fl: #93c5fd; }
+    .faction-card.horde  { --f: 239, 68, 68;  --fl: #fca5a5; }
+    .faction-card.nature { --f: 34, 197, 94;  --fl: #86efac; }
+
+    .research-section.faction-card strong,
+    .faction-card th {
+      color: var(--fl);
+    }
+
+    .research-section.faction-card strong {
+      font-size: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .faction-card th {
+      background: rgba(var(--f), 0.22);
+    }
+
+    .faction-card th, .faction-card td {
+      border-color: rgba(var(--f), 0.3);
+    }
+
     .tables-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1528,10 +1561,16 @@
     return wrap;
   }
 
-  for(let f = 1; f <= T12_FACTIONS; f++){
+  const T12_FACTION_DEFS = [
+    { name: 'League', cls: 'league' },
+    { name: 'Horde',  cls: 'horde' },
+    { name: 'Nature', cls: 'nature' }
+  ];
+
+  for(let f = 0; f < T12_FACTIONS; f++){
     const section = document.createElement('div');
-    section.classList.add('research-section');
-    section.innerHTML = '<strong>Faction ' + f + '</strong>';
+    section.classList.add('research-section', 'faction-card', T12_FACTION_DEFS[f].cls);
+    section.innerHTML = '<strong>' + T12_FACTION_DEFS[f].name + '</strong>';
     const tables = document.createElement('div');
     tables.classList.add('tables-container');
     const tbs = [];
@@ -1578,7 +1617,7 @@
       grandTotal += total;
       grandSpent += spent;
       const pct = total ? (spent / total * 100).toFixed(1) : '0.0';
-      sections += `<div class="breakdown-section"><strong>Faction ${i+1} — ${spent.toLocaleString()} / ${total.toLocaleString()} DE spent (${pct}%)</strong></div>
+      sections += `<div class="breakdown-section"><strong style="color:${['#93c5fd','#fca5a5','#86efac'][i]}">${T12_FACTION_DEFS[i].name} — ${spent.toLocaleString()} / ${total.toLocaleString()} DE spent (${pct}%)</strong></div>
                <table><thead><tr><th class="text-left">Research</th><th>Current</th><th>Max</th><th>DE Spent</th><th>DE Remaining</th></tr></thead><tbody>${rows}</tbody></table>`;
     });
 
