@@ -1042,7 +1042,7 @@
 <body>
   <div class="container">
     <h1>Brilliance Institute — Dragon Essence (DE) Calculator</h1>
-    <p class="small">Pick your current Brilliance Institute level and each research's current level. Calculator will compute Dragon Essence needed to reach the <strong>T11-required research levels</strong> and Dragon Essence to max the entire tree.</p>
+    <p class="small" id="introText">Pick your current Brilliance Institute level and each research's current level. Calculator will compute Dragon Essence needed to reach the <strong>T11-required research levels</strong> and Dragon Essence to max the entire tree.</p>
     <div class="credit">
       <div class="credit-text">
         <span>🧛</span>
@@ -1616,7 +1616,12 @@
     t12Container.appendChild(section);
   }
 
+  const introEl = document.getElementById('introText');
+  const T11_INTRO = introEl.innerHTML;
+  const T2_INTRO = "Set each research's current level for League, Horde and Nature. Calculator will compute the Dragon Essence still needed for the <strong>combined research progress</strong> to reach 70% of the total Dragon Essence across all three factions.";
+
   function showT12(show){
+    introEl.innerHTML = show ? T2_INTRO : T11_INTRO;
     document.getElementById('left').style.display = show ? 'none' : '';
     document.getElementById('t12Panel').style.display = show ? '' : 'none';
   }
