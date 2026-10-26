@@ -1002,7 +1002,29 @@
         <div class="actions">
           <button id="calcBtn">Calculate</button>
           <button class="secondary" id="resetBtn">Reset</button>
+          <button class="secondary" id="t12Btn">T12 Unlock</button>
         </div>
+      </div>
+
+      <div class="panel" id="t12Panel" style="display:none;">
+        <div class="bi-level-row">
+          <strong>T12 Unlock — set your current research levels for each faction</strong>
+        </div>
+        <div id="t12Factions"></div>
+        <div class="actions">
+          <button id="t12CalcBtn">Calculate</button>
+          <button class="secondary" id="t12ResetBtn">Reset</button>
+          <button class="secondary" id="t12BackBtn">Back</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- T12 Results Modal -->
+    <div id="t12Modal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeT12Modal">&times;</span>
+        <h3>T12 Unlock Results</h3>
+        <div id="t12Results"></div>
       </div>
     </div>
 
@@ -1443,6 +1465,104 @@
     if (e.key === 'Escape') {
       document.getElementById('resultsModal').classList.remove('show');
     }
+  });
+
+  // ---------- T12 Unlock: research form repeated for 3 factions (no building level) ----------
+  const T12_FACTIONS = 3;
+  const t12Tbodies = []; // per faction: [tbodyA, tbodyB]
+  const t12Container = document.getElementById('t12Factions');
+  const t12Half = Math.ceil(researches.length / 2);
+
+  function buildT12Table(list, tbodiesOut){
+    const wrap = document.createElement('div');
+    wrap.classList.add('table-wrapper');
+    const table = document.createElement('table');
+    table.innerHTML = '<thead><tr><th class="text-left">Research</th><th>Brilliance Institute Requirement</th><th>Current Level</th><th>Max Level</th></tr></thead>';
+    const tb = document.createElement('tbody');
+    list.forEach(r=>{
+      const tr = createResearchRow(r);
+      tr.lastElementChild.remove(); // drop the T11 target column
+      tb.appendChild(tr);
+    });
+    table.appendChild(tb);
+    wrap.appendChild(table);
+    tbodiesOut.push(tb);
+    return wrap;
+  }
+
+  for(let f = 1; f <= T12_FACTIONS; f++){
+    const section = document.createElement('div');
+    section.classList.add('research-section');
+    section.innerHTML = '<strong>Faction ' + f + '</strong>';
+    const tables = document.createElement('div');
+    tables.classList.add('tables-container');
+    const tbs = [];
+    tables.appendChild(buildT12Table(researches.slice(0, t12Half), tbs));
+    tables.appendChild(buildT12Table(researches.slice(t12Half), tbs));
+    t12Tbodies.push(tbs);
+    section.appendChild(tables);
+    t12Container.appendChild(section);
+  }
+
+  function showT12(show){
+    document.getElementById('left').style.display = show ? 'none' : '';
+    document.getElementById('t12Panel').style.display = show ? '' : 'none';
+  }
+  document.getElementById('t12Btn').addEventListener('click', ()=> showT12(true));
+  document.getElementById('t12BackBtn').addEventListener('click', ()=> showT12(false));
+
+  document.getElementById('t12ResetBtn').addEventListener('click', ()=>{
+    t12Tbodies.forEach(tbs => tbs.forEach(tb => tb.querySelectorAll('input').forEach(inp => inp.value = 0)));
+    document.getElementById('t12Results').innerHTML = '';
+  });
+
+  const T12_REQUIRED_PCT = 0.70;
+
+  document.getElementById('t12CalcBtn').addEventListener('click', ()=>{
+    let grandTotal = 0, grandSpent = 0;
+    let sections = '';
+    t12Tbodies.forEach((tbs, i)=>{
+      let total = 0, spent = 0;
+      let rows = '';
+      tbs.forEach(tb => tb.querySelectorAll('tr').forEach(tr=>{
+        const r = researches.find(x => x.id === tr.dataset.id);
+        const input = tr.querySelector('input');
+        let lv = parseInt(input.value || 0, 10);
+        if(isNaN(lv) || lv < 0) lv = 0;
+        if(lv > r.costs.length) lv = r.costs.length;
+        input.value = lv;
+        const rowTotal = sumSlice(r.costs, 0, r.costs.length);
+        const rowSpent = sumSlice(r.costs, 0, lv);
+        total += rowTotal;
+        spent += rowSpent;
+        rows += `<tr><td class="text-left">${r.name}</td><td>${lv}</td><td>${r.costs.length}</td><td>${rowSpent.toLocaleString()}</td><td>${(rowTotal - rowSpent).toLocaleString()}</td></tr>`;
+      }));
+      grandTotal += total;
+      grandSpent += spent;
+      const pct = total ? (spent / total * 100).toFixed(1) : '0.0';
+      sections += `<div class="breakdown-section"><strong>Faction ${i+1} — ${spent.toLocaleString()} / ${total.toLocaleString()} DE spent (${pct}%)</strong></div>
+               <table><thead><tr><th class="text-left">Research</th><th>Current</th><th>Max</th><th>DE Spent</th><th>DE Remaining</th></tr></thead><tbody>${rows}</tbody></table>`;
+    });
+
+    const needed = Math.ceil(grandTotal * T12_REQUIRED_PCT);
+    const left = Math.max(0, needed - grandSpent);
+    const pctAll = grandTotal ? (grandSpent / grandTotal * 100).toFixed(1) : '0.0';
+    const summary = `<div class="result">
+        <div><strong>Combined progress (DE-weighted):</strong> ${grandSpent.toLocaleString()} / ${grandTotal.toLocaleString()} DE (${pctAll}%)</div>
+        <div><strong>DE needed for ${T12_REQUIRED_PCT*100}%:</strong> ${needed.toLocaleString()} DE</div>
+        <div><strong>DE left to reach ${T12_REQUIRED_PCT*100}%:</strong> ${left > 0 ? left.toLocaleString() + ' DE' : 'Requirement met'}</div>
+        <div class="breakdown-note">Progress is the DE already spent on completed levels across all ${T12_FACTIONS} factions, divided by the DE to max all ${T12_FACTIONS} trees. DE can be spent in any faction.</div>
+      </div>`;
+    document.getElementById('t12Results').innerHTML = summary + sections;
+    document.getElementById('t12Modal').classList.add('show');
+  });
+
+  document.getElementById('closeT12Modal').addEventListener('click', ()=> document.getElementById('t12Modal').classList.remove('show'));
+  document.getElementById('t12Modal').addEventListener('click', (e)=>{
+    if(e.target.id === 't12Modal') document.getElementById('t12Modal').classList.remove('show');
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') document.getElementById('t12Modal').classList.remove('show');
   });
 
   // initialize defaults
