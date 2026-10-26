@@ -13,7 +13,7 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #000000 0%, #141108 25%, #000000 50%, #000000 75%, #000000 100%);
+      background: #000000;
       color: #ffffff;
       min-height: 100vh;
       padding: 15px;
@@ -69,15 +69,13 @@
     }
 
     .panel {
-      background: rgba(10, 10, 10, 0.85);
-      border: 2px solid rgba(255, 215, 0, 0.6);
+      background: #000000;
+      border: 1px solid rgba(255, 215, 0, 0.25);
       border-radius: 20px;
       padding: 18px;
       -webkit-backdrop-filter: blur(15px);
       backdrop-filter: blur(15px);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.4), 
-                  0 0 30px rgba(255, 215, 0, 0.25),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      box-shadow: none;
       position: relative;
       overflow: hidden;
     }
@@ -89,7 +87,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(255, 179, 0, 0.08));
+      background: none;
       pointer-events: none;
       z-index: 1;
     }
@@ -235,7 +233,7 @@
       border-collapse: collapse;
       margin-top: 12px;
       font-size: 13px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 8px 25px rgba(0,0,0,0.2);
@@ -249,7 +247,7 @@
     }
 
     th {
-      background: rgba(255, 215, 0, 0.15);
+      background: rgba(255, 215, 0, 0.07);
       color: #ffd700;
       font-weight: 600;
       font-size: 12px;
@@ -286,6 +284,11 @@
     .faction-card.league { --f: 59, 130, 246; --fl: #93c5fd; }
     .faction-card.horde  { --f: 239, 68, 68;  --fl: #fca5a5; }
     .faction-card.nature { --f: 34, 197, 94;  --fl: #86efac; }
+
+    .max-faction-btn {
+      display: block;
+      margin: 14px 0 0 auto;
+    }
 
     .research-section.faction-card strong,
     .faction-card th {
@@ -385,8 +388,8 @@
     }
 
     .result {
-      background: rgba(255, 179, 0, 0.1);
-      border: 2px solid rgba(255, 179, 0, 0.3);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 215, 0, 0.2);
       padding: 25px;
       border-radius: 15px;
       margin-top: 20px;
@@ -462,7 +465,7 @@
       color: #a8a29e;
       margin-top: 15px;
       padding: 12px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px);
@@ -876,8 +879,8 @@
     }
 
     .modal-content {
-      background: rgba(10, 10, 10, 0.95);
-      border: 2px solid rgba(255, 179, 0, 0.6);
+      background: #000000;
+      border: 1px solid rgba(255, 215, 0, 0.25);
       border-radius: 20px;
       padding: 40px;
       width: 90%;
@@ -888,35 +891,39 @@
       position: relative;
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.6), 
-                  0 0 40px rgba(255, 179, 0, 0.4);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.6);
       animation: slideIn 0.3s ease;
       font-size: 16px;
     }
 
     /* Modal content scrollable area */
-    .modal-content #results {
+    .modal-content #results,
+    .modal-content #t12Results {
       height: calc(100% - 60px);
       overflow-y: auto;
       padding-right: 10px;
     }
 
     /* Custom scrollbar for modal content */
-    .modal-content #results::-webkit-scrollbar {
+    .modal-content #results::-webkit-scrollbar,
+    .modal-content #t12Results::-webkit-scrollbar {
       width: 8px;
     }
 
-    .modal-content #results::-webkit-scrollbar-track {
+    .modal-content #results::-webkit-scrollbar-track,
+    .modal-content #t12Results::-webkit-scrollbar-track {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 4px;
     }
 
-    .modal-content #results::-webkit-scrollbar-thumb {
+    .modal-content #results::-webkit-scrollbar-thumb,
+    .modal-content #t12Results::-webkit-scrollbar-thumb {
       background: rgba(255, 215, 0, 0.6);
       border-radius: 4px;
     }
 
-    .modal-content #results::-webkit-scrollbar-thumb:hover {
+    .modal-content #results::-webkit-scrollbar-thumb:hover,
+    .modal-content #t12Results::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 215, 0, 0.8);
     }
 
@@ -927,7 +934,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(255, 179, 0, 0.12), rgba(255, 215, 0, 0.08));
+      background: none;
       pointer-events: none;
       z-index: 1;
       border-radius: 18px;
@@ -1575,7 +1582,16 @@
     tables.classList.add('tables-container');
     const tbs = [];
     tables.appendChild(buildT12Table(researches.slice(0, t12Half), tbs));
-    tables.appendChild(buildT12Table(researches.slice(t12Half), tbs));
+    const rightTable = buildT12Table(researches.slice(t12Half), tbs);
+    const maxFactionBtn = document.createElement('button');
+    maxFactionBtn.type = 'button';
+    maxFactionBtn.classList.add('max-faction-btn');
+    maxFactionBtn.textContent = 'Max ' + T12_FACTION_DEFS[f].name;
+    maxFactionBtn.addEventListener('click', () => {
+      tbs.forEach(tb => tb.querySelectorAll('input').forEach(inp => { inp.value = inp.max; }));
+    });
+    rightTable.appendChild(maxFactionBtn);
+    tables.appendChild(rightTable);
     t12Tbodies.push(tbs);
     section.appendChild(tables);
     t12Container.appendChild(section);
@@ -1616,16 +1632,14 @@
       }));
       grandTotal += total;
       grandSpent += spent;
-      const pct = total ? (spent / total * 100).toFixed(1) : '0.0';
-      sections += `<div class="breakdown-section"><strong style="color:${['#93c5fd','#fca5a5','#86efac'][i]}">${T12_FACTION_DEFS[i].name} — ${spent.toLocaleString()} / ${total.toLocaleString()} DE spent (${pct}%)</strong></div>
+      sections += `<div class="breakdown-section"><strong style="color:${['#93c5fd','#fca5a5','#86efac'][i]}">${T12_FACTION_DEFS[i].name} — ${spent.toLocaleString()} / ${total.toLocaleString()} DE spent</strong></div>
                <table><thead><tr><th class="text-left">Research</th><th>Current</th><th>Max</th><th>DE Spent</th><th>DE Remaining</th></tr></thead><tbody>${rows}</tbody></table>`;
     });
 
     const needed = Math.ceil(grandTotal * T12_REQUIRED_PCT);
     const left = Math.max(0, needed - grandSpent);
-    const pctAll = grandTotal ? (grandSpent / grandTotal * 100).toFixed(1) : '0.0';
     const summary = `<div class="result">
-        <div><strong>Combined progress (DE-weighted):</strong> ${grandSpent.toLocaleString()} / ${grandTotal.toLocaleString()} DE (${pctAll}%)</div>
+        <div><strong>Combined progress (DE-weighted):</strong> ${grandSpent.toLocaleString()} / ${grandTotal.toLocaleString()} DE</div>
         <div><strong>DE needed for ${T12_REQUIRED_PCT*100}%:</strong> ${needed.toLocaleString()} DE</div>
         <div><strong>DE left to reach ${T12_REQUIRED_PCT*100}%:</strong> ${left > 0 ? left.toLocaleString() + ' DE' : 'Requirement met'}</div>
         <div class="breakdown-note">Progress is the DE already spent on completed levels across all ${T12_FACTIONS} factions, divided by the DE to max all ${T12_FACTIONS} trees. DE can be spent in any faction.</div>
