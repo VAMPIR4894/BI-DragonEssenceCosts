@@ -207,6 +207,18 @@
       background: linear-gradient(135deg, #55ff55, #44dd44);
     }
 
+    .number-btn.limit {
+      width: auto;
+      padding: 0 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #8a6a2a, #6b5020);
+    }
+
+    .number-btn.limit:hover {
+      background: linear-gradient(135deg, #a8822f, #85632a);
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -1297,9 +1309,24 @@
       }
     });
     
+    // Min / Max buttons jump straight to 0 or the research's max level
+    const minBtn = document.createElement('button');
+    minBtn.classList.add('number-btn', 'limit');
+    minBtn.textContent = 'Min';
+    minBtn.type = 'button';
+    minBtn.addEventListener('click', () => { input.value = 0; });
+
+    const maxBtn = document.createElement('button');
+    maxBtn.classList.add('number-btn', 'limit');
+    maxBtn.textContent = 'Max';
+    maxBtn.type = 'button';
+    maxBtn.addEventListener('click', () => { input.value = r.costs.length; });
+
+    inputContainer.appendChild(minBtn);
     inputContainer.appendChild(minusBtn);
     inputContainer.appendChild(input);
     inputContainer.appendChild(plusBtn);
+    inputContainer.appendChild(maxBtn);
     currTd.appendChild(inputContainer);
     
     const maxTd = document.createElement('td'); maxTd.textContent = r.costs.length;
