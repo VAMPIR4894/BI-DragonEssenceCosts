@@ -1632,14 +1632,14 @@
       }));
       grandTotal += total;
       grandSpent += spent;
-      sections += `<div class="breakdown-section"><strong style="color:${['#93c5fd','#fca5a5','#86efac'][i]}">${T12_FACTION_DEFS[i].name} — ${spent.toLocaleString()} / ${total.toLocaleString()} DE spent</strong></div>
+      sections += `<div class="breakdown-section"><strong style="color:${['#93c5fd','#fca5a5','#86efac'][i]}">${T12_FACTION_DEFS[i].name} — ${spent.toLocaleString()} / ${total.toLocaleString()} DE spent (${total ? (spent / total * 100).toFixed(1) : '0.0'}%)</strong></div>
                <table><thead><tr><th class="text-left">Research</th><th>Current</th><th>Max</th><th>DE Spent</th><th>DE Remaining</th></tr></thead><tbody>${rows}</tbody></table>`;
     });
 
     const needed = Math.ceil(grandTotal * T12_REQUIRED_PCT);
     const left = Math.max(0, needed - grandSpent);
     const summary = `<div class="result">
-        <div><strong>Combined progress (DE-weighted):</strong> ${grandSpent.toLocaleString()} / ${grandTotal.toLocaleString()} DE</div>
+        <div><strong>Combined progress (DE-weighted):</strong> ${grandSpent.toLocaleString()} / ${grandTotal.toLocaleString()} DE (${grandTotal ? (grandSpent / grandTotal * 100).toFixed(1) : '0.0'}%)</div>
         <div><strong>DE needed for ${T12_REQUIRED_PCT*100}%:</strong> ${needed.toLocaleString()} DE</div>
         <div><strong>DE left to reach ${T12_REQUIRED_PCT*100}%:</strong> ${left > 0 ? left.toLocaleString() + ' DE' : 'Requirement met'}</div>
         <div class="breakdown-note">Progress is the DE already spent on completed levels across all ${T12_FACTIONS} factions, divided by the DE to max all ${T12_FACTIONS} trees. DE can be spent in any faction.</div>
