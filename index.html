@@ -1069,7 +1069,7 @@
   biInput.min = 1;
   biInput.max = 15;
   biInput.step = 1;
-  biInput.value = 1;
+  biInput.value = 15;
 
   const biPlusBtn = document.createElement('button');
   biPlusBtn.classList.add('number-btn', 'plus');
@@ -1417,7 +1417,7 @@
   });
   
   document.getElementById('resetBtn').addEventListener('click', ()=>{
-    biInput.value = 1;
+    biInput.value = 15;
     const allInputs = [...tbody1.querySelectorAll('input'), ...tbody2.querySelectorAll('input')];
     allInputs.forEach(inp=> inp.value = 0);
     document.getElementById('t11Cost').textContent = '—';
