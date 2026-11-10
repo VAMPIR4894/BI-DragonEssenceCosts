@@ -341,6 +341,48 @@
       color: #daa520;
     }
 
+    /* ---------- Layout: single column on phones, side panel on wide screens ---------- */
+    .side { display: contents; }
+    .grp-wrap { break-inside: avoid; }
+
+    @media (min-width: 1100px) {
+      .container { max-width: 1360px; }
+      .layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
+      .side {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        position: sticky;
+        top: 14px;
+        max-height: calc(100vh - 28px);
+        overflow-y: auto;
+        padding-right: 2px;
+      }
+      .summary { position: static; margin-top: 0; }
+      .sum-head b { font-size: 30px; }
+      details.breakdown {
+        margin-top: 0;
+        padding: 12px 14px;
+        background: #000;
+        border: 1px solid rgba(255, 215, 0, 0.25);
+        border-radius: 16px;
+      }
+      .side table { font-size: 12px; }
+      .side th, .side td { padding: 5px 4px; }
+      .side::-webkit-scrollbar { width: 6px; }
+      .side::-webkit-scrollbar-thumb { background: rgba(255, 215, 0, 0.4); border-radius: 3px; }
+      .toolbar { margin-top: -4px; }
+      .tab { padding: 14px 12px; }
+    }
+
+    @media (min-width: 1200px) {
+      .rows { column-count: 2; column-gap: 32px; }
+      .grp-wrap .grp { margin-top: 0; padding-top: 14px; }
+      .stepper input[type=number] { width: 54px; }
+      .stepper { gap: 5px; }
+      .number-btn { width: 30px; height: 30px; }
+    }
+
     /* ---------- Responsive ---------- */
     @media (max-width: 1024px) {
       .credit { position: static; display: block; width: fit-content; margin: 10px auto 16px; }
@@ -390,6 +432,8 @@
       <p id="aboutText"></p>
     </details>
 
+    <div class="layout">
+    <main class="main">
     <div class="tabs" role="tablist" aria-label="Calculator mode">
       <button class="tab" role="tab" id="tab-t1" aria-controls="panel-t1" aria-selected="true">Unlock T11 Troops</button>
       <button class="tab" role="tab" id="tab-t2" aria-controls="panel-t2" aria-selected="false" tabindex="-1">Tier 2 Unlock (70%)</button>
@@ -411,23 +455,28 @@
           <div class="stepper" id="biStepper"></div>
         </div>
         <div id="t1Rows"></div>
-        <details class="breakdown" id="t1Breakdown">
-          <summary>Per-research breakdown &amp; cheapest next steps</summary>
-          <div class="bd-body" id="t1BreakdownBody"></div>
-        </details>
       </div>
 
       <!-- Tier 2: 70% combined progress -->
       <div id="panel-t2" role="tabpanel" aria-labelledby="tab-t2" hidden>
         <div id="t2Factions"></div>
-        <details class="breakdown" id="t2Breakdown">
-          <summary>Per-faction breakdown</summary>
-          <div class="bd-body" id="t2BreakdownBody"></div>
-        </details>
       </div>
     </div>
 
-    <div class="summary" id="summary" aria-live="polite"></div>
+
+    </main>
+    <aside class="side">
+      <div class="summary" id="summary" aria-live="polite"></div>
+      <details class="breakdown" id="t1Breakdown">
+        <summary>Per-research breakdown &amp; cheapest next steps</summary>
+        <div class="bd-body" id="t1BreakdownBody"></div>
+      </details>
+      <details class="breakdown" id="t2Breakdown" hidden>
+        <summary>Per-faction breakdown</summary>
+        <div class="bd-body" id="t2BreakdownBody"></div>
+      </details>
+    </aside>
+    </div>
 
     <div class="footer">
       <p style="margin: 0; opacity: 0.8;">
@@ -632,14 +681,18 @@
   }
 
   function buildRows(container, scope) {
-    let lastReq = null;
+    container.classList.add('rows');
+    let lastReq = null, group = container;
     researches.forEach(r => {
       if (r.biReq !== lastReq) {
         lastReq = r.biReq;
+        group = document.createElement('div');
+        group.className = 'grp-wrap';
         const h = document.createElement('div');
         h.className = 'grp';
-        h.innerHTML = 'Brilliance Institute level ' + r.biReq;
-        container.appendChild(h);
+        h.textContent = 'Brilliance Institute level ' + r.biReq;
+        group.appendChild(h);
+        container.appendChild(group);
       }
       const row = document.createElement('div');
       row.className = 'rrow';
@@ -685,7 +738,7 @@
       max.addEventListener('click', () => setLevel(scope, r.id, r.costs.length));
 
       row.append(name, stepper, max);
-      container.appendChild(row);
+      group.appendChild(row);
       refs[scope][r.id] = { row, meta, input, minus, plus, max, r };
       order[scope].push(input);
     });
@@ -864,6 +917,7 @@
       btn.setAttribute('aria-selected', String(sel));
       btn.tabIndex = sel ? 0 : -1;
       document.getElementById('panel-' + t).hidden = !sel;
+      document.getElementById(t + 'Breakdown').hidden = !sel;
       if (sel && focus) btn.focus();
     });
     changed();
@@ -917,9 +971,17 @@
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') hideToast(); });
 
+  // On wide screens the breakdown lives in the side panel, so keep it open.
+  const wideScreen = window.matchMedia('(min-width: 1100px)');
+  function syncBreakdown() {
+    if (wideScreen.matches) ['t1Breakdown', 't2Breakdown'].forEach(id => { document.getElementById(id).open = true; });
+  }
+  wideScreen.addEventListener('change', syncBreakdown);
+
   // ---------- Init ----------
   adopt(loadInitial());
   showTab(state.tab);
+  syncBreakdown();
   </script>
 </body>
 </html>
